@@ -12,8 +12,10 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name.trim() || !username.trim() || !password.trim() || !specialization.trim() || !yearExp.trim() || !description.trim()) {
-
+    if (!name.trim() || !username.trim() || !password.trim() || !specialization.trim() || !yearExp.trim() || yearExp <= 0 || !description.trim()) {
+      alert("Inserire i campi correttamente!")
+    } else {
+      console.log("Iscrizione efffettuata con successo")
     }
 
 
@@ -74,6 +76,7 @@ function App() {
                 >
                 </textarea>
               </label>
+              <button className="btn btn-primary">Iscriviti</button>
             </form>
           </div>
 
