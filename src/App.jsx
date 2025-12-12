@@ -1,4 +1,7 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
+const letters = "abcdefghijklmnopqrstuvwxyz";
+const numbers = "0123456789";
+const symbols = `"!@#$%^&*()-_=+[]{}|;:'\\",.<>?/~`
 
 function App() {
 
@@ -9,16 +12,49 @@ function App() {
   const [yearExp, setYearExp] = useState("");
   const [description, setDescription] = useState("");
 
+  //verifico se è valido l'username
+  const isUsernameValid = useMemo(() => {
+
+    const charsValid = username.split("").every(char =>
+      letters.includes(char.toLowerCase()) || numbers.includes(char)
+    )
+    return charsValid && username.length >= 6;
+  }, [username])
+
+  //verifico se la password è valida
+  const isPasswordValid = useMemo(() => {
+
+    return (
+      password.length >= 8 && password.split("").some(char => letters.includes(char)) && password.split("").some(char => numbers.includes(char)) && password.split("").some(char => symbols.includes(char))
+    )
+
+  }, [password])
+
+  //verifico per la descrizione
+  const isDescriptionValid = useMemo(() => {
+    return description.trim().length >= 100 && description.trim().length <= 1000
+  }, [description])
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name.trim() || !username.trim() || !password.trim() || !specialization.trim() || !yearExp.trim() || yearExp <= 0 || !description.trim()) {
+    if (
+      !name.trim() ||
+      !username.trim() ||
+      !password.trim() ||
+      !specialization.trim() ||
+      !yearExp.trim() ||
+      yearExp <= 0 ||
+      !description.trim() ||
+      !isUsernameValid ||
+      !isPasswordValid ||
+      !isDescriptionValid
+    ) {
       alert("Inserire i campi correttamente!")
     } else {
-      console.log("Iscrizione efffettuata con successo")
+      console.log("Iscrizione effettuata con successo")
     }
-
-
   }
 
   return (
@@ -46,6 +82,10 @@ function App() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)} />
+                  {username.trim() && (
+                    <span style={{ color: isUsernameValid ? 'green' : 'red' }}>{isUsernameValid ? "Username valido" : "Deve avere almeno 6 caratrteri senza caratteri speciali"}
+                    </span>
+                  )}
                 </label>
               </div>
               <div>
@@ -56,6 +96,10 @@ function App() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)} />
+                  {password.trim() && (
+                    <span style={{ color: isPasswordValid ? 'green' : 'red' }}>{isPasswordValid ? "Password valida" : "Deve avere almeno 8 caratrteri con una lettera, un numero ed un simbolo"}
+                    </span>
+                  )}
                 </label>
               </div>
               <div>
@@ -90,8 +134,11 @@ function App() {
                     className="form-control"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                  >
-                  </textarea>
+                  />
+                  {description.trim() && (
+                    <span style={{ color: isDescriptionValid ? 'green' : 'red' }}>{isDescriptionValid ? "Descrizione valida" : "Deve avere tra i 100 e i 1000 caratteri"}
+                    </span>
+                  )}
                 </label>
               </div>
               <button className="btn btn-primary">Iscriviti</button>
