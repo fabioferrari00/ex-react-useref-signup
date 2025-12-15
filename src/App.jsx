@@ -1,16 +1,18 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 const letters = "abcdefghijklmnopqrstuvwxyz";
 const numbers = "0123456789";
 const symbols = `"!@#$%^&*()-_=+[]{}|;:'\\",.<>?/~`
 
 function App() {
 
-  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [specialization, setSpecialization] = useState("");
-  const [yearExp, setYearExp] = useState("");
-  const [description, setDescription] = useState("");
+
+
+  const nameRef = useRef()
+  const specializationRef = useRef();
+  const yearExpRef = useRef();
 
   //verifico se è valido l'username
   const isUsernameValid = useMemo(() => {
@@ -23,11 +25,9 @@ function App() {
 
   //verifico se la password è valida
   const isPasswordValid = useMemo(() => {
-
     return (
       password.length >= 8 && password.split("").some(char => letters.includes(char)) && password.split("").some(char => numbers.includes(char)) && password.split("").some(char => symbols.includes(char))
     )
-
   }, [password])
 
   //verifico per la descrizione
@@ -38,6 +38,10 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const name = nameRef.current.value;
+    const yearExp = yearExpRef.current.value;
+    const specialization = specializationRef.current.value;
 
     if (
       !name.trim() ||
@@ -53,7 +57,14 @@ function App() {
     ) {
       alert("Inserire i campi correttamente!")
     } else {
-      console.log("Iscrizione effettuata con successo")
+      console.log("Iscrizione effettuata con successo", {
+        name,
+        username,
+        password,
+        specialization,
+        yearExp,
+        description
+      })
     }
   }
 
@@ -70,8 +81,7 @@ function App() {
                   <input
                     className="form-control"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)} />
+                    ref={nameRef} />
                 </label>
               </div>
               <div>
@@ -107,8 +117,7 @@ function App() {
                   <span>Specializzazione</span>
                   <select
                     className="form-select"
-                    value={specialization}
-                    onChange={(e) => setSpecialization(e.target.value)}
+                    ref={specializationRef}
                   >
                     <option value="">Seleziona una specializzazione</option>
                     <option value="Full Stack">Full Stack</option>
@@ -123,8 +132,7 @@ function App() {
                   <input
                     className="form-control"
                     type="number"
-                    value={yearExp}
-                    onChange={(e) => setYearExp(e.target.value)} />
+                    ref={yearExpRef} />
                 </label>
               </div>
               <div>
